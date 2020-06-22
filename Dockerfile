@@ -1,21 +1,14 @@
-FROM girder/slicer_cli_web
+FROM slicer/buildenv-qt5-centos7:latest
 MAINTAINER Sam Horvath <sam.horvath@kitware.com>
 
-RUN apt-get update
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.15.2/cmake-3.15.2.tar.gz
-RUN tar -zxvf cmake-3.15.2.tar.gz -C /
-WORKDIR /cmake-3.15.2
-RUN ./bootstrap
-RUN make && make install
+RUN pip install ctk-cli
 
 COPY . /brains
 RUN mkdir /brains-rel
 
-RUN apt-get install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev
-
 # Perform build of the iMIQ CLIs
 WORKDIR /brains-rel
-RUN /usr/local/bin/cmake \
+RUN cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DBRAINSTools_REQUIRES_TBB=OFF \
   -DBRAINSTools_REQUIRES_FFTW=OFF \
@@ -50,3 +43,4 @@ RUN /usr/local/bin/cmake \
   /brains 
 
 RUN make zlib && make
+
