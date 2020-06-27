@@ -14,6 +14,7 @@ RUN cmake \
   -DBRAINSTools_REQUIRES_FFTW=OFF \
   -DBRAINSTools_BUILD_DICOM_SUPPORT=OFF \
   -DBRAINSTools_DISABLE_TESTING=ON \
+  -DBUILD_TESTING:BOOL=OFF \
   -DUSE_DebugImageViewer=OFF \
   -DBRAINS_DEBUG_IMAGE_WRITE=OFF \
   -DUSE_BRAINSRefacer=OFF \
@@ -40,7 +41,11 @@ RUN cmake \
   -DUSE_BRAINSResample=ON \
   -DUSE_BRAINSTransformConvert=ON \
   -DUSE_DWIConvert=OFF  \
+  -DITK_FORBID_DOWNLOADS:BOOL=ON \
   /brains 
 
 RUN make zlib && make
+RUN cp /brains/cli_list.py /brains/cli_list.json /brains-rel/BRAINSTools-Release-EPRelease-build/bin
+WORKDIR /brains-rel/BRAINSTools-Release-EPRelease-build/bin
 
+ENTRYPOINT ["python", "./cli_list.py"]
